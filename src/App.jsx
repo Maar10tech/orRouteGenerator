@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { getRoute } from "./Helper";
 import { useRef } from "react";
+import Swal from 'sweetalert2'
 
 export default function App() {
 
@@ -40,11 +41,18 @@ export default function App() {
         knownPlaces.current.push(bestPlace);
         return true;
       } else {
-        Throw(`OpenStreetMap kennt den Ort nicht: ${place}`);
+        throw `OpenStreetMap kennt den Ort nicht: ${place}`;
         return false;
       }
     } catch (error) {
-      console.error(`Fehler bei der Überprüfung von OpenStreetMap für ${place}: ${error.message}`);
+      console.error(`Fehler bei der Überprüfung von OpenStreetMap für ${place}: ${error}`);
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        text: error,
+        showConfirmButton: false,
+        timer: 2000
+      });
       return false;
     }
   }
@@ -68,7 +76,14 @@ async function checkAll() {
 }
   
 async function submitHandler() {
-  
+    Swal.fire({
+      position: "center",
+      icon: "loading",
+      title: "Loading",
+      showConfirmButton: false,
+      allowOutsideClick: false
+    });
+
     knownPlaces.current = []
 
     const {res1, res2, res3, res4, res5, res6} = await checkAll();
@@ -85,14 +100,13 @@ async function submitHandler() {
         });
         routesHistory.current.push(newRoute)
         setRoute(newRoute)
-
       } catch (error) {
         console.error(error);
-        return false;
       }
     }else{
       console.log("not all inputs are valid")
     } 
+    Swal.close();
   }
 
   return (
@@ -173,7 +187,7 @@ async function submitHandler() {
         </div>
         <div className="flex-1 flex-col flex mx-5">
           <h1 className="text-xl p-3">History</h1>
-          <div className="flex flex-row">
+          <div className="grid grid-flow-row grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
           {routesHistory.current.map((hisRoute, index) => (
             <button className="border-2 p-1 m-1 rounded-xl border-blue-600/50 max-w-xs" onClick={() => setRoute(hisRoute)}>
               Route {index+1}
