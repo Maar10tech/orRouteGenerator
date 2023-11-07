@@ -101,7 +101,7 @@ async function submitHandler() {
       <div className="flex flex-row">
         <div className="flex flex-col basis-2/3">
           <h1 className="text-xl p-3">Enter The places</h1>
-          <section className="grid grid-flow-row grid-cols-3 mx-5">
+          <section className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mx-5">
             <div className="">
               <label className='text-xl m-3'>Startplace:</label>
               <input
@@ -182,7 +182,9 @@ async function submitHandler() {
           </div>
         </div>
       </div> 
-      <Map route={route} className='h-full w-full' />
+      <div className='h-[80vh] flex-none md:flex-1 md:h-full w-full'>
+        <Map route={route}  />
+      </div>
     </div>
   );
 }
